@@ -93,7 +93,6 @@ inline mapvalue&	mapvalue::findandinsert(std::string name)
 }
 
 // マクロ
-//#define MAPVALUE_INNER_BEGIN(T)	inline void to_mapvalue(mapvalue& map, bool is_obj_to_map)			{ T* p=this;
 #define MAPVALUE_BEGIN(T)		inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, T* p)	{			 map.set_type(mapvalue::OBJECT);
 #define		MV_VALUE(v)				::to_mapvalue(map[#v],  is_obj_to_map, &p->v);
 #define		MV_PVALUE(v)			::to_mapvalue(map[#v],  is_obj_to_map, p->v);
@@ -103,7 +102,6 @@ inline mapvalue&	mapvalue::findandinsert(std::string name)
 // MAPVALUE_INNER_BEGIN でのクラス関数をグローバル関数へ変換
 template<class T>
 void to_mapvalue(mapvalue& map, bool is_obj_to_map, T* p) {
-	//map.set_type(mapvalue::OBJECT);
 	p->to_mapvalue(map, is_obj_to_map, p);
 }
 
@@ -112,7 +110,6 @@ template<class T>
 void mv_value(mapvalue& s, bool is_obj_to_map, T* p)
 {
 	s.set_type(mapvalue::VALUE);
-	//s.set_name(name);
 	if(is_obj_to_map) {
 		s.set(*p);
 	}

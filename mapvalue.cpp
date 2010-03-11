@@ -10,11 +10,11 @@ struct Hoge3 {
 	int x;
 	int y;
 
-	void to_mapvalue(mapvalue& map, bool is_obj_to_map, Hoge3* p) {
-		::to_mapvalue(map["z"], is_obj_to_map, &z);
-		::to_mapvalue(map["x"], is_obj_to_map, &x);
-		::to_mapvalue(map["y"], is_obj_to_map, &y);
-	}
+	//void to_mapvalue(mapvalue& map, bool is_obj_to_map, Hoge3* p) {
+	//	::to_mapvalue(map["z"], is_obj_to_map, &z);
+	//	::to_mapvalue(map["x"], is_obj_to_map, &x);
+	//	::to_mapvalue(map["y"], is_obj_to_map, &y);
+	//}
 };
 
 struct Hoge2 {
