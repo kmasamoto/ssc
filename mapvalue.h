@@ -93,40 +93,39 @@ inline mapvalue&	mapvalue::findandinsert(std::string name)
 }
 
 // マクロ
-#define MAPVALUE_INNER_BEGIN(T)	inline void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy)		{ T* p=this; map.set_name(name); map.set_type(mapvalue::OBJECT);
-#define MAPVALUE_BEGIN(T)		inline void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy, T* p) {			 map.set_name(name); map.set_type(mapvalue::OBJECT);
-#define		MV_VALUE(v)				::to_mapvalue(map[#v], #v,  copy, &p->v);
-#define		MV_PVALUE(v)			::to_mapvalue(map[#v], #v,  copy, p->v);
-#define		MV_ARRAY(v)				::mv_array1(map[#v], #v,  copy, p->v);
-#define		MV_PARRAY(v)			::mv_array1(map[#v], #v,  copy, p->v);
+#define MAPVALUE_INNER_BEGIN(T)	inline void to_mapvalue(mapvalue& map, bool is_obj_to_map)		{ T* p=this; map.set_type(mapvalue::OBJECT);
+#define MAPVALUE_BEGIN(T)		inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, T* p) {			 map.set_type(mapvalue::OBJECT);
+#define		MV_VALUE(v)				::to_mapvalue(map[#v],  is_obj_to_map, &p->v);
+#define		MV_PVALUE(v)			::to_mapvalue(map[#v],  is_obj_to_map, p->v);
+#define		MV_ARRAY(v)				::mv_array(map[#v],  is_obj_to_map, &p->v);
+#define		MV_PARRAY(v)			::mv_array(map[#v],  is_obj_to_map, &p->v);
 #define MAPVALUE_END()			}
 
 // MAPVALUE_INNER_BEGIN でのクラス関数をグローバル関数へ変換
 template<class T>
-void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy, T* p) {
-	p->to_mapvalue(map, name, copy);
+void to_mapvalue(mapvalue& map, bool is_obj_to_map, T* p) {
+	p->to_mapvalue(map, is_obj_to_map);
 }
 
 // 値指定
 template<class T>
-void mv_value(mapvalue& s, const char* name, mapvalue::copy copy, T& v)
+void mv_value(mapvalue& s, bool is_obj_to_map, T* p)
 {
 	s.set_type(mapvalue::VALUE);
-	s.set_name(name);
-	if(copy == mapvalue::obj_to_map) {
-		s.set(v);
+	//s.set_name(name);
+	if(is_obj_to_map) {
+		s.set(*p);
 	}
 	else{
-		s.get(&v);
+		s.get(p);
 	}
 }
 
 // 値指定
-inline void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy, int*			p){	mv_value(map, name, copy, *p); }
-//inline void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy, __int64*		p){	mv_value(map, name, copy, *p); }
-inline void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy, float*		p){	mv_value(map, name, copy, *p); }
-inline void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy, double*		p){	mv_value(map, name, copy, *p); }
-inline void to_mapvalue(mapvalue& map, const char* name, mapvalue::copy copy, std::string*	p){	mv_value(map, name, copy, *p); }
+inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, int*				p){	mv_value(map, is_obj_to_map, p); }
+inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, float*			p){	mv_value(map, is_obj_to_map, p); }
+inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, double*			p){	mv_value(map, is_obj_to_map, p); }
+inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, std::string*		p){	mv_value(map, is_obj_to_map, p); }
 
 // 文字列変換
 inline char* itoa(int i)
@@ -136,20 +135,22 @@ inline char* itoa(int i)
 }
 // 配列
 template<class T>
-void mv_array1(mapvalue& s, const char* name, mapvalue::copy copy, T& v)
+void mv_array(mapvalue& s, bool is_obj_to_map, T* p)
 {
+	T& v = *p;
+
 	s.set_type(mapvalue::ARRAY);
-	if(copy == mapvalue::obj_to_map){
+	if(is_obj_to_map){
 		for(int i=0; i<v.size();i++) {
-			mapvalue* p = new mapvalue();
-			to_mapvalue(*p,itoa(i),copy,&v[i]);
+			mapvalue* p = new mapvalue(itoa(i));
+			to_mapvalue(*p,is_obj_to_map,&v[i]);
 			s.push_back(p);
 		}
 	}
 	else {
 		v.resize(s.size());
 		for(int i=0; i<v.size();i++) {
-			to_mapvalue(s[i], name, copy,&v[i]);
+			to_mapvalue(s[i], is_obj_to_map,&v[i]);
 		}
 	}
 }
