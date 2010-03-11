@@ -17,10 +17,10 @@ std::string mv_ini_path(mapvalue* p)
 				s+="]";
 				bEndKakko = false;
 			}
-			if(list[i]->get_type() == mapvalue::type_object) {
+			if(list[i]->get_type() == mapvalue::OBJECT) {
 				s+=".";
 			}
-			else if (list[i]->get_type() == mapvalue::type_array && i != list.size() - 1 ) {
+			else if (list[i]->get_type() == mapvalue::ARRAY && i != list.size() - 1 ) {
 				s+="[";
 				bEndKakko = true;
 			}
@@ -42,15 +42,15 @@ void mv_write_ini(T* t, char* filename, char* section)
 void mv_write_ini_path(mapvalue* p, char* filename, char* section, char* path)
 {
 	mapvalue& m = *p;
-	if(m.get_type() == mapvalue::type_none) {
+	if(m.get_type() == mapvalue::NONE) {
 		assert(0);
 	}
-	else if(m.get_type() == mapvalue::type_value) {
+	else if(m.get_type() == mapvalue::VALUE) {
 		std::string s = mv_ini_path(&m);
 		::WritePrivateProfileString(section, s.c_str(), m.get(&std::string()).c_str(), filename);
 	}
 	else {
-		if( m.get_type() == mapvalue::type_array ) {
+		if( m.get_type() == mapvalue::ARRAY ) {
 			std::string s = mv_ini_path(&m);
 			s += ".size";
 			char buf[512];
@@ -75,17 +75,17 @@ void mv_read_ini(T* t, char* filename, char* section)
 void mv_read_ini(mapvalue* p, char* filename, char* section)
 {
 	mapvalue& m = *p;
-	if(m.get_type() == mapvalue::type_none) {
+	if(m.get_type() == mapvalue::NONE) {
 		assert(0);
 	}
-	else if(m.get_type() == mapvalue::type_value) {
+	else if(m.get_type() == mapvalue::VALUE) {
 		std::string s = mv_ini_path(&m);
 
 		char buf[512];
 		::GetPrivateProfileString(section, s.c_str(), "", buf, 512, filename);
 		m.set(buf);
 	}
-	else if(m.get_type() == mapvalue::type_array) {
+	else if(m.get_type() == mapvalue::ARRAY) {
 		// 配列データ読み込み
 		std::string s = mv_ini_path(&m);
 		std::string size = s + ".size";
@@ -100,12 +100,14 @@ void mv_read_ini(mapvalue* p, char* filename, char* section)
 
 			::GetPrivateProfileString(section, key.c_str(), "", buf, 512, filename);
 			if(buf[0] != '\0') {
-				m.push_back_value(buf);
+				mapvalue* p = new mapvalue(key.c_str());
+				p->set(buf);
+				m.push_back( p );
 			}
 		}
 
 	}
-	else if(m.get_type() == mapvalue::type_object) {
+	else if(m.get_type() == mapvalue::OBJECT) {
 		// オブジェクトの読み込み
 		for(int i=0; i<m.size(); i++) {
 			mv_read_ini(&m[i], filename, section );
