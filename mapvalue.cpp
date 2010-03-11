@@ -5,12 +5,24 @@
 #include "mapvalue.h"
 #include "mv_ini.h"
 
+struct Hoge3 {
+	int z;
+	int x;
+	int y;
+
+	void to_mapvalue(mapvalue& map, bool is_obj_to_map, Hoge3* p) {
+		::to_mapvalue(map["z"], is_obj_to_map, &z);
+		::to_mapvalue(map["x"], is_obj_to_map, &x);
+		::to_mapvalue(map["y"], is_obj_to_map, &y);
+	}
+};
+
 struct Hoge2 {
 	int z;
 	int x;
 	int y;
 
-	MAPVALUE_INNER_BEGIN(Hoge2)
+	MAPVALUE_BEGIN(Hoge2)
 		MV_VALUE(z)
 		MV_VALUE(x)
 		MV_VALUE(y)
@@ -22,6 +34,7 @@ struct Hoge {
 	int y;
 	int z;
 	Hoge2 obj;
+	Hoge3 hoge3;
 	Hoge2* pobj;
 	std::vector<int> array_int;
 	std::vector<Hoge2> array_obj;
@@ -32,6 +45,7 @@ MAPVALUE_BEGIN(Hoge)
 	MV_VALUE(y)
 	MV_VALUE(z)
 	MV_VALUE(obj)
+	MV_VALUE(hoge3)
 	MV_PVALUE(pobj)
 	MV_ARRAY(array_int)
 	MV_ARRAY(array_obj)

@@ -2,7 +2,6 @@
 
 #include <string>
 #include <sstream>
-#include <list>
 #include <vector>
 #include <assert.h>
 #include <algorithm>
@@ -40,6 +39,7 @@ public:
 	// 値型アクセス
 	template<class T> T		get(T* p)			{ std::stringstream s(m_value); s >> *p; return *p;}
 	template<class T> void	set(T v)			{ std::stringstream s; s << v; m_value = s.str(); }
+
 	// 配列及びオブジェクト型アクセスメソッド
 	size_t					size()const						{ return m_array.size();	}
 	void					push_back(mapvalue* p)			{ m_array.push_back(p);					m_array.back()->m_parent = this;	}
@@ -93,18 +93,18 @@ inline mapvalue&	mapvalue::findandinsert(std::string name)
 }
 
 // マクロ
-#define MAPVALUE_INNER_BEGIN(T)	inline void to_mapvalue(mapvalue& map, bool is_obj_to_map)		{ T* p=this; map.set_type(mapvalue::OBJECT);
-#define MAPVALUE_BEGIN(T)		inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, T* p) {			 map.set_type(mapvalue::OBJECT);
+//#define MAPVALUE_INNER_BEGIN(T)	inline void to_mapvalue(mapvalue& map, bool is_obj_to_map)			{ T* p=this;
+#define MAPVALUE_BEGIN(T)		inline void to_mapvalue(mapvalue& map, bool is_obj_to_map, T* p)	{			 map.set_type(mapvalue::OBJECT);
 #define		MV_VALUE(v)				::to_mapvalue(map[#v],  is_obj_to_map, &p->v);
 #define		MV_PVALUE(v)			::to_mapvalue(map[#v],  is_obj_to_map, p->v);
 #define		MV_ARRAY(v)				::mv_array(map[#v],  is_obj_to_map, &p->v);
-#define		MV_PARRAY(v)			::mv_array(map[#v],  is_obj_to_map, &p->v);
 #define MAPVALUE_END()			}
 
 // MAPVALUE_INNER_BEGIN でのクラス関数をグローバル関数へ変換
 template<class T>
 void to_mapvalue(mapvalue& map, bool is_obj_to_map, T* p) {
-	p->to_mapvalue(map, is_obj_to_map);
+	//map.set_type(mapvalue::OBJECT);
+	p->to_mapvalue(map, is_obj_to_map, p);
 }
 
 // 値指定
