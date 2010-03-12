@@ -99,7 +99,7 @@ SOURCE=.\StdAfx.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\mapvalue.h
+SOURCE=..\ssc\mapvalue.h
 # End Source File
 # Begin Source File
 
