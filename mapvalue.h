@@ -6,16 +6,17 @@
 #include <assert.h>
 #include <algorithm>
 
-namespace mv {
-	class  value {
+//namespace mv {
+	class  value2 {
 	public:
 		std::string m_value;
 		template<class T> operator T() { T v; std::stringstream s(m_value); s >> v; return v; }
-		template<class T> value& operator =(T v) { std::stringstream s; s << v; m_value = s.str(); return *this; }
+		template<class T> value2& operator =(T v) { std::stringstream s; s << v; m_value = s.str(); return *this; }
+		std::string str(){ return m_value; }
 		//value& operator=(std::string s)
-		operator std::string(){ return m_value; }
+		//operator std::string(){ return m_value; }
 	};
-}
+//}
 
 // mapvalue
 class mapvalue
@@ -28,8 +29,9 @@ public:
 		ARRAY,
 		OBJECT,
 	};
-	mv::value& value() { return m_value; }
+	//mv::value& value() { return m_value; }
 	//mv::value value;
+	value2 value;
 
 	// タイプ
 	type					get_type()						{ return m_type; }; // タイプの取得
@@ -75,7 +77,7 @@ private:
 	// メンバ
 	type m_type;
 	std::string m_name;
-	mv::value m_value;
+	//mv::value m_value;
 	std::vector<mapvalue*> m_array;
 	mapvalue* m_parent;
 };
@@ -127,7 +129,10 @@ void mv_value(mapvalue& s, bool is_obj_to_map, T* p)
 		s.value = *p;
 	}
 	else{
-		*p = s.value;
+		T v = s.value; 
+		*p = v;
+		//((T)*p) = static_cast<T>(s.value);;
+		//*p = static_cast<T>(s.value);
 	}
 }
 
