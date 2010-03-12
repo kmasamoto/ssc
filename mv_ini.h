@@ -47,7 +47,7 @@ void mv_write_ini_path(mapvalue* p, char* filename, char* section, char* path)
 	}
 	else if(m.get_type() == mapvalue::VALUE) {
 		std::string s = mv_ini_path(&m);
-		::WritePrivateProfileString(section, s.c_str(), m.get(&std::string()).c_str(), filename);
+		::WritePrivateProfileString(section, s.c_str(), m.value, filename);
 	}
 	else {
 		if( m.get_type() == mapvalue::ARRAY ) {
@@ -83,7 +83,7 @@ void mv_read_ini(mapvalue* p, char* filename, char* section)
 
 		char buf[512];
 		::GetPrivateProfileString(section, s.c_str(), "", buf, 512, filename);
-		m.set(buf);
+		m.value = buf;
 	}
 	else if(m.get_type() == mapvalue::ARRAY) {
 		// 配列データ読み込み
@@ -101,7 +101,7 @@ void mv_read_ini(mapvalue* p, char* filename, char* section)
 			::GetPrivateProfileString(section, key.c_str(), "", buf, 512, filename);
 			if(buf[0] != '\0') {
 				mapvalue* p = new mapvalue(key.c_str());
-				p->set(buf);
+				p->value = buf;
 				m.push_back( p );
 			}
 		}

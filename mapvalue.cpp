@@ -72,9 +72,10 @@ int main(int argc, char* argv[])
 	mv_write_ini(&h, "C:\\test2.ini", "h");
 
 	mapvalue m("h", h);
-	int n2 = static_cast<int>( m["x"] );
-	int n3 = m["y"];
-	std::string sss = m["z"];
+	int n4 = m["obj"]["x"].value;
+	int n2 = m["x"].value;
+	int n3 = m["y"].value;
+	std::string sss = m["z"].value;
 
 	Hoge h2;
 	h2.pobj = &h2.obj;

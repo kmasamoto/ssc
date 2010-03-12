@@ -6,6 +6,17 @@
 #include <assert.h>
 #include <algorithm>
 
+namespace mv {
+	class  value {
+	public:
+		std::string m_value;
+		template<class T> operator T() { T v; std::stringstream s(m_value); s >> v; return v; }
+		template<class T> value& operator =(T v) { std::stringstream s; s << v; m_value = s.str(); return *this; }
+		//value& operator=(std::string s)
+		operator std::string(){ return m_value; }
+	};
+}
+
 // mapvalue
 class mapvalue
 {
@@ -17,6 +28,8 @@ public:
 		ARRAY,
 		OBJECT,
 	};
+	mv::value& value() { return m_value; }
+	//mv::value value;
 
 	// タイプ
 	type					get_type()						{ return m_type; }; // タイプの取得
@@ -31,8 +44,8 @@ public:
 	std::vector<mapvalue*>	parentlist();
 
 	// 値型アクセス
-	template<class T> T		get(T* p)			{ std::stringstream s(m_value); s >> *p; return *p;}
-	template<class T> void	set(T v)			{ std::stringstream s; s << v; m_value = s.str(); }
+	//template<class T> T		get(T* p)			{ std::stringstream s(m_value); s >> *p; return *p;}
+	//template<class T> void	set(T v)			{ std::stringstream s; s << v; m_value = s.str(); }
 	
 	//template<class T> operator T()				{ T t; this->get(&t); return t; }
 	//operator int() { int n; this->get(&n); return n; }
@@ -62,7 +75,7 @@ private:
 	// メンバ
 	type m_type;
 	std::string m_name;
-	std::string m_value;
+	mv::value m_value;
 	std::vector<mapvalue*> m_array;
 	mapvalue* m_parent;
 };
@@ -111,10 +124,10 @@ void mv_value(mapvalue& s, bool is_obj_to_map, T* p)
 {
 	s.set_type(mapvalue::VALUE);
 	if(is_obj_to_map) {
-		s.set(*p);
+		s.value = *p;
 	}
 	else{
-		s.get(p);
+		*p = s.value;
 	}
 }
 
