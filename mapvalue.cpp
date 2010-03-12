@@ -10,11 +10,12 @@ struct Hoge3 {
 	int x;
 	int y;
 
-	//void to_mapvalue(mapvalue& map, bool is_obj_to_map, Hoge3* p) {
-	//	::to_mapvalue(map["z"], is_obj_to_map, &z);
-	//	::to_mapvalue(map["x"], is_obj_to_map, &x);
-	//	::to_mapvalue(map["y"], is_obj_to_map, &y);
-	//}
+	void to_mapvalue(mapvalue& map, bool is_obj_to_map, Hoge3* p) {
+		map.set_type(mapvalue::OBJECT);
+		::to_mapvalue(map["z"], is_obj_to_map, &z);
+		::to_mapvalue(map["x"], is_obj_to_map, &x);
+		::to_mapvalue(map["y"], is_obj_to_map, &y);
+	}
 };
 
 struct Hoge2 {
@@ -69,6 +70,11 @@ int main(int argc, char* argv[])
 	h.array_obj.push_back(h.obj);
 
 	mv_write_ini(&h, "C:\\test2.ini", "h");
+
+	mapvalue m("h", h);
+	int n2 = static_cast<int>( m["x"] );
+	int n3 = m["y"];
+	std::string sss = m["z"];
 
 	Hoge h2;
 	h2.pobj = &h2.obj;

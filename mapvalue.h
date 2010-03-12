@@ -18,19 +18,13 @@ public:
 		OBJECT,
 	};
 
-	// 取得関数への引数
-	enum copy {
-		map_to_obj,
-		obj_to_map,
-	};
-
 	// タイプ
 	type					get_type()						{ return m_type; }; // タイプの取得
 	type					set_type(type t)				{ return m_type = t; }; // タイプの取得
 
 	// 名前
 	std::string				get_name()						{ return m_name; }// 名前の取得
-	std::string				set_name(std::string name)		{ return m_name = name; }// 名前の取得
+	//std::string				set_name(std::string name)		{ return m_name = name; }// 名前の取得
 
 	// 親の取得
 	mapvalue*				parent()			{ return m_parent; }
@@ -39,6 +33,9 @@ public:
 	// 値型アクセス
 	template<class T> T		get(T* p)			{ std::stringstream s(m_value); s >> *p; return *p;}
 	template<class T> void	set(T v)			{ std::stringstream s; s << v; m_value = s.str(); }
+	
+	//template<class T> operator T()				{ T t; this->get(&t); return t; }
+	//operator int() { int n; this->get(&n); return n; }
 
 	// 配列及びオブジェクト型アクセスメソッド
 	size_t					size()const						{ return m_array.size();	}
@@ -48,6 +45,9 @@ public:
 
 	// コンストラクタ
 	mapvalue(std::string name="")							{ m_type = NONE; m_name = name; m_parent = 0;	}
+	template<class T>
+	mapvalue(std::string name, T& r)						{ m_name = name; ::to_mapvalue(*this, true, &r);	}
+
 	// デストラクタ
 	~mapvalue(){
 		for(int i=0; i<m_array.size(); i++) {
@@ -139,7 +139,11 @@ void mv_array(mapvalue& s, bool is_obj_to_map, T* p)
 	s.set_type(mapvalue::ARRAY);
 	if(is_obj_to_map){
 		for(int i=0; i<v.size();i++) {
-			mapvalue* p = new mapvalue(itoa(i));
+			// インデックスを名前に設定
+			char buf[512];
+			itoa(i, buf, 512);
+
+			mapvalue* p = new mapvalue(buf);
 			to_mapvalue(*p,is_obj_to_map,&v[i]);
 			s.push_back(p);
 		}
