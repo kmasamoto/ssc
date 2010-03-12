@@ -5,7 +5,7 @@
 #include <vector>
 #include <assert.h>
 #include <algorithm>
-#include <boost/any.hpp>
+
 //namespace mv {
 	class  value2 {
 	public:
@@ -31,7 +31,7 @@ public:
 	};
 	//mv::value& value() { return m_value; }
 	//mv::value value;
-	boost::any value;
+	value2 value;
 
 	// タイプ
 	type					get_type()						{ return m_type; }; // タイプの取得
@@ -129,8 +129,8 @@ void mv_value(mapvalue& s, bool is_obj_to_map, T* p)
 		s.value = *p;
 	}
 	else{
-		//T v = boost::any_cast<T>(s.value);
-		*p = boost::any_cast<T>(s.value);
+		T v = s.value; 
+		*p = v;
 		//((T)*p) = static_cast<T>(s.value);;
 		//*p = static_cast<T>(s.value);
 	}
@@ -158,11 +158,10 @@ void mv_array(mapvalue& s, bool is_obj_to_map, T* p)
 	if(is_obj_to_map){
 		for(int i=0; i<v.size();i++) {
 			// インデックスを名前に設定
-			//char buf[512];
-			//itoa(i, buf, 512);
-			std::stringstream ss; ss << i;
+			char buf[512];
+			itoa(i, buf, 512);
 
-			mapvalue* p = new mapvalue(ss.str());
+			mapvalue* p = new mapvalue(buf);
 			to_mapvalue(*p,is_obj_to_map,&v[i]);
 			s.push_back(p);
 		}
