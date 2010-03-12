@@ -47,7 +47,7 @@ void mv_write_ini_path(mapvalue* p, char* filename, char* section, char* path)
 	}
 	else if(m.get_type() == mapvalue::VALUE) {
 		std::string s = mv_ini_path(&m);
-		::WritePrivateProfileString(section, s.c_str(), m.value.str().c_str(), filename);
+		::WritePrivateProfileString(section, s.c_str(), boost::any_cast<const char*>(m.value), filename);
 	}
 	else {
 		if( m.get_type() == mapvalue::ARRAY ) {
