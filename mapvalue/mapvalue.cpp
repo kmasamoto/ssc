@@ -6,8 +6,6 @@
 #include "mv_ini.h"
 #include <vector>
 #include <map>
-#include <boost/assign.hpp>
-using namespace std;
 
 struct Hoge3 {
 	int z;
@@ -58,13 +56,6 @@ MAPVALUE_END()
 
 int main(int argc, char* argv[])
 {
-    using namespace boost::assign;
-
-    vector<int> v;
-    v += 1,2,3,4,5;
-
-    map<char,int> m = map_list_of('A',1)('J',11)('Q',12)('K',13);
-
 	std::string s="1";
 	std::stringstream ss(s);
 	int n; ss >> n;
@@ -83,11 +74,6 @@ int main(int argc, char* argv[])
 	mv_write_ini(&h, "C:\\test2.ini", "h");
 
 	mapvalue m("h", h);
-	int n4 = boost::any_cast<int>(m["obj"]["x"].value);
-	int n2 = boost::any_cast<int>(m["x"].value);
-	int n3 = boost::any_cast<int>(m["y"].value);
-	std::string sss = boost::any_cast<std::string>(m["z"].value);
-
 	Hoge h2;
 	h2.pobj = &h2.obj;
 	mv_read_ini(&h2, "C:\\test2.ini", "h");
