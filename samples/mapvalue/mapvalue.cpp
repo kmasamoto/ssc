@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "../ssc/mapvalue.h"
+#include "ssc/mapvalue.h"
 #include "mv_ini.h"
 #include <vector>
 #include <map>
